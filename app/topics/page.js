@@ -21,12 +21,12 @@ export default function TopicsPage() {
             <p className="text-gray-500 text-center mb-6">
               Test your knowledge on {topic} with our curated quizzes!
             </p>
-            <a
+            {/* <a
               href={`/topics/${topic.toLowerCase()}`}
               className="block text-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-            >
+            > */}
               Start Quiz
-            </a>
+            {/* </a> */}
           </div>
         ))}
       </div>
