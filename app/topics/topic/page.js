@@ -1,58 +1,49 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function DynamicQuizPage({ params }) {
-  const { topic } = params; // Extract topic from URL
-  const [quizQuestions, setQuizQuestions] = useState([]);
+export default function QuizPage({ params }) {
+  const { topic } = params;
+  const searchParams = useSearchParams();
+  const difficulty = searchParams.get("difficulty") || "easy";
+
+  const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchQuizQuestions = async () => {
-      setLoading(true);
+    async function fetchQuestions() {
       try {
-        const response = await fetch(`/api/quiz?topic=${topic}`);
+        const response = await fetch(`/api/quiz?topic=${topic}&difficulty=${difficulty}`);
         if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
+          throw new Error("Failed to fetch questions");
         }
         const data = await response.json();
-        setQuizQuestions(data);
+        setQuestions(data);
       } catch (err) {
-        setError("Failed to fetch quiz data.");
+        setError(err.message);
       } finally {
         setLoading(false);
       }
-    };
+    }
 
-    fetchQuizQuestions();
-  }, [topic]);
+    fetchQuestions();
+  }, [topic, difficulty]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  if (quizQuestions.length === 0) {
-    return <div>No questions available for this topic.</div>;
-  }
-
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-100 py-10 px-4">
+    <div className="min-h-screen p-6">
       <h1 className="text-3xl font-bold mb-6">{topic.toUpperCase()} Quiz</h1>
-      <ul className="space-y-6 w-full max-w-3xl">
-        {quizQuestions.map((question, index) => (
-          <li
-            key={index}
-            className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-all"
-          >
-            <p className="font-medium text-lg mb-4">{question.question}</p>
-            <ul className="space-y-2">
-              {question.options.map((option, idx) => (
-                <li
-                  key={idx}
-                  className="bg-gray-200 p-2 rounded hover:bg-blue-200 cursor-pointer"
-                >
-                  {option}
-                </li>
+      <ul>
+        {questions.map((q, index) => (
+          <li key={index}>
+            <p>{q.question}</p>
+            <ul>
+              {q.options.map((option, idx) => (
+                <li key={idx}>{option}</li>
               ))}
             </ul>
           </li>

@@ -1,42 +1,38 @@
+import { NextResponse } from "next/server";
+
+const topicFiles = {
+  maths: {
+    easy: "Matheasy.json",
+    medium: "Mathsmedium.json",
+    hard: "Mathshard.json",
+  },
+  science: {
+    easy: "Scienceeasy.json",
+    medium: "Sciencemedium.json",
+    hard: "Sciencehard.json",
+  },
+};
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const topic = searchParams.get("topic");
+  const difficulty = searchParams.get("difficulty") || "easy";
 
-  // Mock quiz data
-  const quizzes = {
-    maths: [
-      {
-        question: "What is 2 + 2?",
-        options: ["3", "4", "5"],
-        correct: "4",
-      },
-      {
-        question: "What is 10 / 2?",
-        options: ["2", "5", "10"],
-        correct: "5",
-      },
-    ],
-    science: [
-      {
-        question: "What planet is known as the Red Planet?",
-        options: ["Mars", "Earth", "Venus"],
-        correct: "Mars",
-      },
-      {
-        question: "What is H2O?",
-        options: ["Water", "Oxygen", "Hydrogen"],
-        correct: "Water",
-      },
-    ],
-  };
+  if (!topicFiles[topic] || !topicFiles[topic][difficulty]) {
+    return NextResponse.json({ error: "Topic or difficulty not found" }, { status: 404 });
+  }
 
-  // Find quiz for the given topic
-  const quizData = quizzes[topic?.toLowerCase()] || { error: "Topic not found" };
+  const fileName = topicFiles[topic][difficulty];
 
-  return new Response(JSON.stringify(quizData), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/${fileName}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${fileName}`);
+    }
+    const questions = await response.json();
+    return NextResponse.json(questions, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching JSON file:", error);
+    return NextResponse.json({ error: "Failed to load quiz data" }, { status: 500 });
+  }
 }

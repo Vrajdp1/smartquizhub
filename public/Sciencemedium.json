@@ -1,0 +1,105 @@
+{
+    "medium": [
+      {
+        "question": "What is the most abundant gas in Earth's atmosphere?",
+        "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+        "correct": "Nitrogen"
+      },
+      {
+        "question": "Which organ in the human body produces bile?",
+        "options": ["Liver", "Kidney", "Stomach", "Pancreas"],
+        "correct": "Liver"
+      },
+      {
+        "question": "What is the powerhouse of the cell?",
+        "options": ["Nucleus", "Mitochondria", "Ribosome", "Chloroplast"],
+        "correct": "Mitochondria"
+      },
+      {
+        "question": "What is the chemical symbol for gold?",
+        "options": ["Au", "Ag", "Pb", "Pt"],
+        "correct": "Au"
+      },
+      {
+        "question": "What type of rock is formed by volcanic activity?",
+        "options": ["Sedimentary", "Igneous", "Metamorphic", "Basaltic"],
+        "correct": "Igneous"
+      },
+      {
+        "question": "What planet has the most moons?",
+        "options": ["Earth", "Jupiter", "Saturn", "Uranus"],
+        "correct": "Saturn"
+      },
+      {
+        "question": "Which human organ is responsible for filtering blood?",
+        "options": ["Heart", "Kidney", "Liver", "Lungs"],
+        "correct": "Kidney"
+      },
+      {
+        "question": "Which element is needed for the process of photosynthesis?",
+        "options": ["Nitrogen", "Carbon", "Chlorophyll", "Hydrogen"],
+        "correct": "Chlorophyll"
+      },
+      {
+        "question": "What is the chemical formula for methane?",
+        "options": ["CH4", "C2H6", "CO2", "CH3OH"],
+        "correct": "CH4"
+      },
+      {
+        "question": "Which planet has a day that is longer than its year?",
+        "options": ["Venus", "Mars", "Mercury", "Earth"],
+        "correct": "Venus"
+      },
+      {
+        "question": "What is the second most abundant element in Earth's crust?",
+        "options": ["Silicon", "Aluminum", "Iron", "Calcium"],
+        "correct": "Silicon"
+      },
+      {
+        "question": "What force keeps the planets in orbit around the sun?",
+        "options": ["Magnetic Force", "Nuclear Force", "Gravity", "Electromagnetic Force"],
+        "correct": "Gravity"
+      },
+      {
+        "question": "What is the chemical symbol for sodium?",
+        "options": ["S", "Na", "K", "N"],
+        "correct": "Na"
+      },
+      {
+        "question": "What is the main function of red blood cells?",
+        "options": ["Fight infections", "Transport oxygen", "Clot blood", "Produce hormones"],
+        "correct": "Transport oxygen"
+      },
+      {
+        "question": "What is the smallest unit of matter?",
+        "options": ["Cell", "Molecule", "Atom", "Electron"],
+        "correct": "Atom"
+      },
+      {
+        "question": "Which gas is released during respiration?",
+        "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+        "correct": "Carbon Dioxide"
+      },
+      {
+        "question": "What type of energy is produced by moving water?",
+        "options": ["Nuclear", "Hydroelectric", "Thermal", "Solar"],
+        "correct": "Hydroelectric"
+      },
+      {
+        "question": "What part of the brain is responsible for memory and learning?",
+        "options": ["Cerebellum", "Cerebrum", "Medulla", "Hypothalamus"],
+        "correct": "Cerebrum"
+      },
+      {
+        "question": "What layer of Earth's atmosphere contains the ozone layer?",
+        "options": ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"],
+        "correct": "Stratosphere"
+      },
+      {
+        "question": "Which planet is tilted on its side, making its rotation unique?",
+        "options": ["Neptune", "Uranus", "Saturn", "Venus"],
+        "correct": "Uranus"
+      }
+    ]
+  }
+  

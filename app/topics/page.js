@@ -1,70 +1,160 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function TopicsPage() {
-  const topics = ["Maths", "Science", "Chemistry", "Biology", "General Knowledge"];
-  const [searchTerm, setSearchTerm] = useState("");
+  const topics = [
+    { name: "Maths", icon: "📘", description: "Master algebra, geometry, and more.", popular: true },
+    { name: "Science", icon: "🔬", description: "Explore physics, chemistry, and biology.", popular: true },
+    { name: "Chemistry", icon: "⚗️", description: "Dive into the world of molecules and reactions.", popular: false },
+    { name: "Biology", icon: "🧬", description: "Understand life sciences and ecosystems.", popular: false },
+    { name: "General Knowledge", icon: "🌍", description: "Test your knowledge about the world.", popular: false },
+  ];
 
-  // Filter topics based on the search term
-  const filteredTopics = topics.filter((topic) =>
-    topic.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [difficulty, setDifficulty] = useState("easy");
+  const [filter, setFilter] = useState("all"); // "all" or "popular"
+  const [hoveredTopic, setHoveredTopic] = useState(null);
+
+  // Filter topics based on search term and popularity
+  const filteredTopics = topics
+    .filter((topic) => {
+      if (filter === "popular") return topic.popular;
+      return true;
+    })
+    .filter((topic) => topic.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 flex flex-col items-center py-10 px-4">
-      <h1 className="text-4xl font-extrabold text-white drop-shadow-lg mb-8">
-        Explore Quiz Topics
-      </h1>
+    <div className="min-h-screen bg-gradient-to-b from-purple-600 via-indigo-700 to-blue-500 text-white">
+      {/* Header */}
+      <header className="text-center py-12">
+        <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">
+          Explore <span className="text-yellow-400">Quiz Topics</span>
+        </h1>
+        <p className="text-lg max-w-3xl mx-auto mb-8">
+          Discover a variety of topics, pick your preferred difficulty level, and challenge yourself with interactive quizzes!
+        </p>
+      </header>
 
-      {/* Search Bar with Clear Button */}
-      <div className="flex items-center mb-8 w-full max-w-md">
-        <input
-          type="text"
-          placeholder="Search for a subject..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300"
-        />
-        {searchTerm && (
-          <button
-            onClick={() => setSearchTerm("")}
-            className="ml-3 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-
-      {/* Topics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl">
-        {filteredTopics.length > 0 ? (
-          filteredTopics.map((topic) => (
-            <div
-              key={topic}
-              className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-            >
-              <div className="flex items-center justify-center mb-4">
-                <span className="text-4xl text-blue-500">📘</span>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-700 mb-4 text-center">
-                {topic}
-              </h2>
-              <p className="text-gray-500 text-center mb-6">
-                Test your knowledge on {topic} with our curated quizzes!
-              </p>
-              <a
-                href={`/topics/${topic.toLowerCase()}`}
-                className="block text-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+      {/* Search and Filters */}
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
+          {/* Search Bar */}
+          <div className="flex items-center w-full max-w-md">
+            <input
+              type="text"
+              placeholder="Search topics..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-800 focus:outline-none focus:ring focus:ring-yellow-400"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="ml-3 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
               >
-                Start Quiz
-              </a>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-300 text-lg font-medium">No topics found. Try a different search!</p>
-        )}
+                Clear
+              </button>
+            )}
+          </div>
+
+          {/* Filter Buttons */}
+          <div className="flex gap-4">
+            <button
+              onClick={() => setFilter("all")}
+              className={`px-4 py-2 rounded-lg font-medium ${
+                filter === "all"
+                  ? "bg-yellow-400 text-gray-800"
+                  : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+              }`}
+            >
+              All Topics
+            </button>
+            <button
+              onClick={() => setFilter("popular")}
+              className={`px-4 py-2 rounded-lg font-medium ${
+                filter === "popular"
+                  ? "bg-yellow-400 text-gray-800"
+                  : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+              }`}
+            >
+              Popular
+            </button>
+          </div>
+
+          {/* Difficulty Selector */}
+          <div className="flex gap-4">
+            {["easy", "medium", "hard"].map((level) => (
+              <button
+                key={level}
+                onClick={() => setDifficulty(level)}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  difficulty === level
+                    ? "bg-yellow-400 text-gray-800"
+                    : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+                }`}
+              >
+                {level.charAt(0).toUpperCase() + level.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
+
+      {/* Topics Section */}
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredTopics.length > 0 ? (
+            filteredTopics.map((topic) => (
+              <div
+                key={topic.name}
+                onMouseEnter={() => setHoveredTopic(topic.name)}
+                onMouseLeave={() => setHoveredTopic(null)}
+                className={`relative bg-gradient-to-br from-white to-gray-100 text-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transform hover:scale-105 transition-all ${
+                  topic.popular ? "border-4 border-yellow-400" : ""
+                }`}
+              >
+                {/* Icon */}
+                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2">
+                  <span className="text-6xl">{topic.icon}</span>
+                </div>
+
+                {/* Card Content */}
+                <div className="text-center mt-10">
+                  <h3 className="text-2xl font-bold mb-2">{topic.name}</h3>
+                  <p className="text-gray-600 mb-4">{topic.description}</p>
+                  <a
+                    href={`/topics/${topic.name.toLowerCase()}?difficulty=${difficulty}`}
+                    className={`block px-6 py-3 text-white font-bold rounded-lg ${
+                      hoveredTopic === topic.name
+                        ? "bg-blue-600 hover:bg-blue-700"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    }`}
+                  >
+                    Start Quiz
+                  </a>
+                </div>
+
+                {/* Popular Badge */}
+                {topic.popular && (
+                  <div className="absolute top-2 right-2 bg-yellow-400 text-xs text-white font-bold px-3 py-1 rounded-full">
+                    Popular
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-300 text-lg font-medium">
+              No topics found. Try a different search!
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="py-6 mt-12 bg-gray-800 text-white text-center">
+        <p>&copy; 2024 SmartQuizHub. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
