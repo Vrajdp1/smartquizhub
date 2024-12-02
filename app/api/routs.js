@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 const topicFiles = {
   maths: {
-    easy: "Matheasy.json",
+    easy: "Mathseasy.json",
     medium: "Mathsmedium.json",
     hard: "Mathshard.json",
   },
