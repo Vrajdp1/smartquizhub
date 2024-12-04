@@ -18,7 +18,7 @@ export default function QuizPage() {
   // Fetch quiz questions from the API
   const fetchQuizQuestions = async () => {
     const API_URL = "https://quizapi.io/api/v1/questions";
-    const API_KEY = "3lsgjMYPph1HBauH1DXErdP5POak0dhb2Mp0S060"; // Replace with your actual API key
+    const API_KEY = "X7fiYJmvSZsC7NeBgwfPLZq8VLCcwUGurvF1BP5T"; // Replace with your actual API key
 
     try {
       const response = await fetch(
@@ -94,7 +94,7 @@ export default function QuizPage() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-600 via-indigo-700 to-blue-500 text-white">
+    <div className="min-h-screen bg-white text-gray-800">
       <div className="container mx-auto px-4 py-10">
         <h1 className="text-4xl font-bold text-center mb-6">
           {topic.toUpperCase()} Quiz
@@ -110,7 +110,7 @@ export default function QuizPage() {
         ) : (
           <>
             {/* Question Display */}
-            <div className="bg-white text-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <div className="bg-gray-100 rounded-lg shadow-md p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4">
                 Question {currentQuestionIndex + 1}:{" "}
                 {questions[currentQuestionIndex].question}
@@ -121,10 +121,11 @@ export default function QuizPage() {
                     <label className="flex items-center">
                       <input
                         type="radio"
-                        name={`question-${currentQuestionIndex}`}
+                        name={`question-${currentQuestionIndex}`} // Unique name for each question
                         value={option}
                         className="mr-2"
                         onChange={() => handleAnswerChange(option)}
+                        checked={userAnswers[currentQuestionIndex] === option} // Retain the selected answer
                         disabled={submitted}
                       />
                       {option}

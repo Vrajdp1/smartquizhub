@@ -1,18 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function TopicsPage() {
   const [topics, setTopics] = useState([
-    { name: "Linux", icon: "🐧", description: "Learn Linux commands and systems.", popular: true },
-    { name: "DevOps", icon: "⚙️", description: "Master DevOps tools and practices.", popular: false },
-    { name: "Networking", icon: "🌐", description: "Understand networks and protocols.", popular: false },
-    { name: "Programming", icon: "💻", description: "Improve coding skills in various languages.", popular: true },
+    { name: "General Knowledge", icon: "📚", description: "Trivia from all over the world.", popular: true },
+    { name: "Entertainment: Books", icon: "📖", description: "Questions about famous books.", popular: false },
+    { name: "Entertainment: Film", icon: "🎥", description: "Explore questions about movies.", popular: true },
+    { name: "Entertainment: Music", icon: "🎵", description: "Trivia on your favorite music.", popular: false },
+    { name: "Entertainment: Musicals & Theatres", icon: "🎭", description: "Dive into musicals and theatres.", popular: false },
+    { name: "Entertainment: Television", icon: "📺", description: "TV shows and series trivia.", popular: false },
+    { name: "Entertainment: Video Games", icon: "🎮", description: "Explore video game trivia.", popular: true },
+    { name: "Entertainment: Board Games", icon: "🎲", description: "Trivia about board games.", popular: false },
+    { name: "Science & Nature", icon: "🌱", description: "Discover science and nature trivia.", popular: true },
+    { name: "Science: Computers", icon: "💻", description: "Learn about computers and tech.", popular: true },
+    { name: "Science: Mathematics", icon: "➗", description: "Improve your math skills.", popular: false },
+    { name: "Mythology", icon: "⚡", description: "Explore myths and legends.", popular: true },
+    { name: "Sports", icon: "🏀", description: "Sports trivia for fans.", popular: true },
+    { name: "Geography", icon: "🌍", description: "Trivia about countries and places.", popular: false },
+    { name: "History", icon: "📜", description: "Discover historical events.", popular: true },
+    { name: "Politics", icon: "🏛️", description: "Dive into political trivia.", popular: false },
+    { name: "Art", icon: "🎨", description: "Learn about famous artworks.", popular: false },
+    { name: "Celebrities", icon: "🌟", description: "Trivia about popular figures.", popular: false },
+    { name: "Animals", icon: "🐾", description: "Learn fun facts about animals.", popular: false },
+    { name: "Vehicles", icon: "🚗", description: "Trivia about cars and vehicles.", popular: false },
+    { name: "Entertainment: Comics", icon: "🦸", description: "Dive into the world of comics.", popular: false },
+    { name: "Science: Gadgets", icon: "📱", description: "Trivia about modern gadgets.", popular: false },
+    { name: "Entertainment: Japanese Anime & Manga", icon: "🎌", description: "Trivia for anime and manga fans.", popular: true },
+    { name: "Entertainment: Cartoon & Animations", icon: "🎥", description: "Trivia about cartoons and animations.", popular: false },
   ]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [difficulty, setDifficulty] = useState("easy");
   const [filter, setFilter] = useState("all");
+  const [numQuestions, setNumQuestions] = useState(10); // Default: 10 questions
+  const [type, setType] = useState("any"); // Default: Any type
 
   const filteredTopics = topics
     .filter((topic) => {
@@ -22,14 +45,14 @@ export default function TopicsPage() {
     .filter((topic) => topic.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-600 via-indigo-700 to-blue-500 text-white">
+    <div className="min-h-screen bg-white text-gray-800">
       {/* Header */}
       <header className="text-center py-12">
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">
-          Explore <span className="text-yellow-400">Quiz Topics</span>
+          Explore <span className="text-blue-500">Quiz Topics</span>
         </h1>
         <p className="text-lg max-w-3xl mx-auto mb-8">
-          Discover a variety of topics, pick your preferred difficulty level, and challenge yourself with interactive quizzes!
+          Discover a variety of topics, pick your preferred difficulty level, and customize your quiz!
         </p>
       </header>
 
@@ -43,7 +66,7 @@ export default function TopicsPage() {
               placeholder="Search topics..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-800 focus:outline-none focus:ring focus:ring-yellow-400"
+              className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-800 focus:outline-none focus:ring focus:ring-blue-400"
             />
             {searchTerm && (
               <button
@@ -61,7 +84,7 @@ export default function TopicsPage() {
               onClick={() => setFilter("all")}
               className={`px-4 py-2 rounded-lg font-medium ${
                 filter === "all"
-                  ? "bg-yellow-400 text-gray-800"
+                  ? "bg-blue-400 text-white"
                   : "bg-gray-300 text-gray-700 hover:bg-gray-400"
               }`}
             >
@@ -71,29 +94,56 @@ export default function TopicsPage() {
               onClick={() => setFilter("popular")}
               className={`px-4 py-2 rounded-lg font-medium ${
                 filter === "popular"
-                  ? "bg-yellow-400 text-gray-800"
+                  ? "bg-blue-400 text-white"
                   : "bg-gray-300 text-gray-700 hover:bg-gray-400"
               }`}
             >
               Popular
             </button>
           </div>
+        </div>
+
+        {/* Additional Options */}
+        <div className="mb-10 flex flex-col items-center gap-4">
+          {/* Number of Questions */}
+          <div className="flex flex-col items-center">
+            <label className="text-lg font-medium mb-2">Number of Questions</label>
+            <input
+              type="number"
+              min="1"
+              max="50"
+              value={numQuestions}
+              onChange={(e) => setNumQuestions(e.target.value)}
+              className="w-32 px-4 py-2 border rounded text-center"
+            />
+          </div>
 
           {/* Difficulty Selector */}
-          <div className="flex gap-4">
-            {["easy", "medium", "hard"].map((level) => (
-              <button
-                key={level}
-                onClick={() => setDifficulty(level)}
-                className={`px-4 py-2 rounded-lg font-medium ${
-                  difficulty === level
-                    ? "bg-yellow-400 text-gray-800"
-                    : "bg-gray-300 text-gray-700 hover:bg-gray-400"
-                }`}
-              >
-                {level.charAt(0).toUpperCase() + level.slice(1)}
-              </button>
-            ))}
+          <div className="flex flex-col items-center">
+            <label className="text-lg font-medium mb-2">Select Difficulty</label>
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value)}
+              className="px-4 py-2 border rounded text-center"
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+
+          {/* Type Selector */}
+          <div className="flex flex-col items-center">
+            <label className="text-lg font-medium mb-2">Select Type</label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="px-4 py-2 border rounded text-center"
+            >
+              <option value="any">Any Type</option>
+              <option value="multiple">Multiple Choice</option>
+              <option value="boolean">True / False</option>
+            </select>
           </div>
         </div>
       </div>
@@ -105,8 +155,8 @@ export default function TopicsPage() {
             filteredTopics.map((topic, index) => (
               <div
                 key={index}
-                className={`relative bg-gradient-to-br from-white to-gray-100 text-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transform hover:scale-105 transition-all ${
-                  topic.popular ? "border-4 border-yellow-400" : ""
+                className={`relative bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transform hover:scale-105 transition-all ${
+                  topic.popular ? "border-4 border-blue-400" : ""
                 }`}
               >
                 {/* Icon */}
@@ -123,7 +173,12 @@ export default function TopicsPage() {
                   <Link
                     href={{
                       pathname: "/quizpage",
-                      query: { topic: topic.name.toLowerCase(), difficulty },
+                      query: {
+                        topic: topic.name.toLowerCase(),
+                        difficulty,
+                        type,
+                        numQuestions,
+                      },
                     }}
                   >
                     <button className="bg-blue-500 text-white mt-4 px-4 py-2 rounded hover:bg-blue-600">
@@ -131,17 +186,10 @@ export default function TopicsPage() {
                     </button>
                   </Link>
                 </div>
-
-                {/* Popular Badge */}
-                {topic.popular && (
-                  <div className="absolute top-2 right-2 bg-yellow-400 text-xs text-white font-bold px-3 py-1 rounded-full">
-                    Popular
-                  </div>
-                )}
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-300 text-lg font-medium">
+            <p className="text-center text-gray-500 text-lg font-medium">
               No topics found. Try a different search!
             </p>
           )}
