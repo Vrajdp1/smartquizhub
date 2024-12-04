@@ -1,22 +1,19 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function TopicsPage() {
-  const topics = [
-    { name: "Maths", icon: "📘", description: "Master algebra, geometry, and more.", popular: true },
-    { name: "Science", icon: "🔬", description: "Explore physics, chemistry, and biology.", popular: true },
-    { name: "Chemistry", icon: "⚗️", description: "Dive into the world of molecules and reactions.", popular: false },
-    { name: "Biology", icon: "🧬", description: "Understand life sciences and ecosystems.", popular: false },
-    { name: "General Knowledge", icon: "🌍", description: "Test your knowledge about the world.", popular: false },
-  ];
-
+  const [topics, setTopics] = useState([
+    { name: "Linux", icon: "🐧", description: "Learn Linux commands and systems.", popular: true },
+    { name: "DevOps", icon: "⚙️", description: "Master DevOps tools and practices.", popular: false },
+    { name: "Networking", icon: "🌐", description: "Understand networks and protocols.", popular: false },
+    { name: "Programming", icon: "💻", description: "Improve coding skills in various languages.", popular: true },
+  ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [difficulty, setDifficulty] = useState("easy");
-  const [filter, setFilter] = useState("all"); // "all" or "popular"
-  const [hoveredTopic, setHoveredTopic] = useState(null);
+  const [filter, setFilter] = useState("all");
 
-  // Filter topics based on search term and popularity
   const filteredTopics = topics
     .filter((topic) => {
       if (filter === "popular") return topic.popular;
@@ -105,11 +102,9 @@ export default function TopicsPage() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTopics.length > 0 ? (
-            filteredTopics.map((topic) => (
+            filteredTopics.map((topic, index) => (
               <div
-                key={topic.name}
-                onMouseEnter={() => setHoveredTopic(topic.name)}
-                onMouseLeave={() => setHoveredTopic(null)}
+                key={index}
                 className={`relative bg-gradient-to-br from-white to-gray-100 text-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transform hover:scale-105 transition-all ${
                   topic.popular ? "border-4 border-yellow-400" : ""
                 }`}
@@ -123,16 +118,18 @@ export default function TopicsPage() {
                 <div className="text-center mt-10">
                   <h3 className="text-2xl font-bold mb-2">{topic.name}</h3>
                   <p className="text-gray-600 mb-4">{topic.description}</p>
-                  <a
-                    href={`/topics/${topic.name.toLowerCase()}?difficulty=${difficulty}`}
-                    className={`block px-6 py-3 text-white font-bold rounded-lg ${
-                      hoveredTopic === topic.name
-                        ? "bg-blue-600 hover:bg-blue-700"
-                        : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+
+                  {/* Link to QuizPage */}
+                  <Link
+                    href={{
+                      pathname: "/quizpage",
+                      query: { topic: topic.name.toLowerCase(), difficulty },
+                    }}
                   >
-                    Start Quiz
-                  </a>
+                    <button className="bg-blue-500 text-white mt-4 px-4 py-2 rounded hover:bg-blue-600">
+                      Start Quiz
+                    </button>
+                  </Link>
                 </div>
 
                 {/* Popular Badge */}

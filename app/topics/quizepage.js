@@ -9,13 +9,13 @@ export default function QuizPage({ params }) {
   const difficulty = searchParams.get("difficulty") || "easy";
 
   const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchQuestions() {
+    const fetchQuestions = async () => {
       try {
-        const response = await fetch(`/api/quiz?topic=${topic}&difficulty=${difficulty}`);
+        const response = await fetch(`/api/routs?topic=${topic}&difficulty=${difficulty}`);
         if (!response.ok) {
           throw new Error("Failed to fetch questions");
         }
@@ -26,8 +26,7 @@ export default function QuizPage({ params }) {
       } finally {
         setLoading(false);
       }
-    }
-
+    };
     fetchQuestions();
   }, [topic, difficulty]);
 
@@ -35,20 +34,18 @@ export default function QuizPage({ params }) {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="min-h-screen p-6">
-      <h1 className="text-3xl font-bold mb-6">{topic.toUpperCase()} Quiz</h1>
-      <ul>
-        {questions.map((q, index) => (
-          <li key={index}>
-            <p>{q.question}</p>
-            <ul>
-              {q.options.map((option, idx) => (
-                <li key={idx}>{option}</li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
+    <div>
+      <h1>{topic.toUpperCase()} Quiz</h1>
+      {questions.map((question, index) => (
+        <div key={index}>
+          <p>{question.question}</p>
+          <ul>
+            {question.options.map((option, idx) => (
+              <li key={idx}>{option}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
