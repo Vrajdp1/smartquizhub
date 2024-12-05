@@ -5,8 +5,15 @@ import { useSearchParams } from "next/navigation";
 
 export default function QuizPage() {
   const searchParams = useSearchParams();
-  const topic = searchParams?.get("topic") || "Linux"; // Default topic
-  const difficulty = searchParams?.get("difficulty") || "Easy"; // Default difficulty
+
+  // State for query parameters
+  const [paramsInitialized, setParamsInitialized] = useState(false);
+  const [amount, setAmount] = useState("10");
+  const [category, setCategory] = useState("9"); // Default: General Knowledge
+  const [difficulty, setDifficulty] = useState("easy");
+  const [type, setType] = useState("multiple");
+
+  // States for quiz logic
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
@@ -15,49 +22,51 @@ export default function QuizPage() {
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
 
-  // Fetch quiz questions from the API
-  const fetchQuizQuestions = async () => {
-    const API_URL = "https://quizapi.io/api/v1/questions";
-    const API_KEY = "X7fiYJmvSZsC7NeBgwfPLZq8VLCcwUGurvF1BP5T"; // Replace with your actual API key
+  // Initialize query parameters
+  useEffect(() => {
+    if (searchParams) {
+      setAmount(searchParams.get("amount") || "10");
+      setCategory(searchParams.get("category") || "9");
+      setDifficulty(searchParams.get("difficulty") || "easy");
+      setType(searchParams.get("type") || "multiple");
+      setParamsInitialized(true); // Mark parameters as initialized
+    }
+  }, [searchParams]);
 
+  // Fetch quiz questions
+  const fetchQuizQuestions = async () => {
     try {
+      setLoading(true);
       const response = await fetch(
-        `${API_URL}?category=${topic}&difficulty=${difficulty}&limit=10`,
-        {
-          headers: {
-            "X-Api-Key": API_KEY,
-          },
-        }
+        `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=${type}`
       );
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch quiz questions: ${response.statusText}`);
+        throw new Error("Failed to fetch quiz questions");
       }
 
       const data = await response.json();
 
-      // Transform data to fit the page structure
       setQuestions(
-        data.map((q) => ({
+        data.results.map((q) => ({
           question: q.question,
-          options: Object.values(q.answers).filter(Boolean),
-          correct: Object.keys(q.correct_answers).find(
-            (key) => q.correct_answers[key] === "true"
-          ),
+          options: [...q.incorrect_answers, q.correct_answer].sort(() => Math.random() - 0.5),
+          correct: q.correct_answer,
         }))
       );
     } catch (err) {
-      console.error("Error fetching quiz questions:", err);
-      setError(err.message || "Failed to load questions.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch questions on mount
+  // Fetch questions when params are initialized
   useEffect(() => {
-    fetchQuizQuestions();
-  }, [topic, difficulty]);
+    if (paramsInitialized) {
+      fetchQuizQuestions();
+    }
+  }, [paramsInitialized]);
 
   // Handle user answer selection
   const handleAnswerChange = (selectedOption) => {
@@ -90,15 +99,16 @@ export default function QuizPage() {
     setCurrentQuestionIndex((prev) => Math.max(prev - 1, 0));
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (!paramsInitialized) return <div>Loading parameters...</div>;
+  if (loading) return <div>Loading questions...</div>;
+  if (error || questions.length === 0) {
+    return <div>Error: {error || "No questions available."}</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-white text-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-purple-600 via-indigo-700 to-blue-500 text-white">
       <div className="container mx-auto px-4 py-10">
-        <h1 className="text-4xl font-bold text-center mb-6">
-          {topic.toUpperCase()} Quiz
-        </h1>
+        <h1 className="text-4xl font-bold text-center mb-6">Quiz</h1>
 
         {submitted ? (
           <div className="text-center">
@@ -110,10 +120,10 @@ export default function QuizPage() {
         ) : (
           <>
             {/* Question Display */}
-            <div className="bg-gray-100 rounded-lg shadow-md p-6 mb-6">
+            <div className="bg-white text-gray-800 rounded-lg shadow-md p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4">
                 Question {currentQuestionIndex + 1}:{" "}
-                {questions[currentQuestionIndex].question}
+                <span dangerouslySetInnerHTML={{ __html: questions[currentQuestionIndex].question }} />
               </h2>
               <ul>
                 {questions[currentQuestionIndex].options.map((option, idx) => (
@@ -121,14 +131,13 @@ export default function QuizPage() {
                     <label className="flex items-center">
                       <input
                         type="radio"
-                        name={`question-${currentQuestionIndex}`} // Unique name for each question
+                        name={`question-${currentQuestionIndex}`}
                         value={option}
                         className="mr-2"
                         onChange={() => handleAnswerChange(option)}
-                        checked={userAnswers[currentQuestionIndex] === option} // Retain the selected answer
                         disabled={submitted}
                       />
-                      {option}
+                      <span dangerouslySetInnerHTML={{ __html: option }} />
                     </label>
                   </li>
                 ))}
